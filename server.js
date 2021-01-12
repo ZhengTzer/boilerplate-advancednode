@@ -5,9 +5,15 @@ const myDB = require('./connection')
 const fccTesting = require('./freeCodeCamp/fcctesting.js')
 const passport = require('passport')
 const session = require('express-session')
+const ObjectID = require('mongodb').ObjectID
 
 // start
 const app = express()
+app.set('view engine', 'pug')
+fccTesting(app) // For fCC testing purposes
+app.use('/public', express.static(process.cwd() + '/public'))
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
 // passport
 app.use(
@@ -22,17 +28,34 @@ app.use(
 app.use(passport.initialize())
 app.use(passport.session())
 
-app.set('view engine', 'pug')
-fccTesting(app) //For FCC testing purposes
+// app engine
+myDB(async (client) => {
+  const myDataBase = await client.db('database').collection('users')
 
-app.use('/public', express.static(process.cwd() + '/public'))
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+  // Be sure to change the title
+  app.route('/').get((req, res) => {
+    //Change the response to render the Pug template
+    res.render('pug', {
+      title: 'Connected to Database',
+      message: 'Please login'
+    })
+  })
 
-app.route('/').get((req, res) => {
-  res.render(process.cwd() + '/views/pug/index.pug', {
-    title: 'Hello',
-    message: 'Please login'
+  // Serialization and deserialization here...
+  passport.serializeUser((user, done) => {
+    done(null, user._id)
+  })
+
+  passport.deserializeUser((id, done) => {
+    myDataBase.findOne({ _id: new ObjectID(id) }, (err, doc) => {
+      done(null, doc)
+    })
+  })
+
+  // Be sure to add this...
+}).catch((e) => {
+  app.route('/').get((req, res) => {
+    res.render('pug', { title: e, message: 'Unable to login' })
   })
 })
 
