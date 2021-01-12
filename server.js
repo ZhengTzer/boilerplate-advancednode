@@ -39,9 +39,9 @@ myDB(async (client) => {
   app.route('/').get((req, res) => {
     //Change the response to render the Pug template
     res.render('pug', {
-      showLogin: true,
       title: 'Connected to Database',
-      message: 'Please login'
+      message: 'Please login',
+      showLogin: true
     })
   })
 
@@ -60,6 +60,17 @@ myDB(async (client) => {
     res.render(process.cwd() + '/views/pug/profile', {
       username: req.user.username
     })
+  })
+
+  // logout
+  app.route('/logout').get((req, res) => {
+    req.logout()
+    res.redirect('/')
+  })
+
+  // catch missing page
+  app.use((req, res, next) => {
+    res.status(404).type('text').send('Not Found')
   })
 
   // Serialization and deserialization here...
