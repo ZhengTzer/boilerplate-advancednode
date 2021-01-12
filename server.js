@@ -56,7 +56,7 @@ myDB(async (client) => {
     )
 
   // profile
-  app.route('/profile').get((req, res) => {
+  app.route('/profile').get(ensureAuthenticated, (req, res) => {
     res.render(process.cwd() + '/views/pug/profile')
   })
 
@@ -95,6 +95,14 @@ myDB(async (client) => {
     res.render('pug', { title: e, message: 'Unable to login' })
   })
 })
+
+// function
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next()
+  }
+  res.redirect('/')
+}
 
 // port listening
 app.listen(process.env.PORT || 3000, () => {
