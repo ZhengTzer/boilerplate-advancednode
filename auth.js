@@ -36,8 +36,7 @@ module.exports = function (app, myDataBase) {
       {
         clientID: process.env.GITHUB_CLIENT_ID,
         clientSecret: process.env.GITHUB_CLIENT_SECRET,
-        callbackURL:
-          'https://shrouded-badlands-17118.herokuapp.com/auth/github/call'
+        callbackURL: process.cwd() + '/auth/github/call'
       },
       function (accessToken, refreshToken, profile, cb) {
         console.log(profile)
