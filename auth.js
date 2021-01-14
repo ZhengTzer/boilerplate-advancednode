@@ -24,8 +24,9 @@ module.exports = function (app, myDataBase) {
           'https://shrouded-badlands-17118.herokuapp.com/auth/github/callback'
       },
       function (accessToken, refreshToken, profile, cb) {
-        console.log(profile)
-        //Database logic here with callback containing our user object
+        User.findOrCreate({ githubId: profile.id }, function (err, user) {
+          return cb(err, user)
+        })
       }
     )
   )
