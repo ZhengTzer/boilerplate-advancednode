@@ -14,6 +14,22 @@ module.exports = function (app, myDataBase) {
       done(null, doc)
     })
   })
+
+  passport.use(
+    new GitHubStrategy(
+      {
+        clientID: process.env.GITHUB_CLIENT_ID,
+        clientSecret: process.env.GITHUB_CLIENT_SECRET,
+        callbackURL:
+          'https://shrouded-badlands-17118.herokuapp.com/auth/github/callback'
+      },
+      function (accessToken, refreshToken, profile, cb) {
+        console.log(profile)
+        //Database logic here with callback containing our user object
+      }
+    )
+  )
+
   passport.use(
     new LocalStrategy(function (username, password, done) {
       myDataBase.findOne({ username: username }, function (err, user) {
@@ -30,19 +46,5 @@ module.exports = function (app, myDataBase) {
         return done(null, user)
       })
     })
-  )
-  passport.use(
-    new GitHubStrategy(
-      {
-        clientID: process.env.GITHUB_CLIENT_ID,
-        clientSecret: process.env.GITHUB_CLIENT_SECRET,
-        callbackURL:
-          'https://shrouded-badlands-17118.herokuapp.com/auth/github/callback'
-      },
-      function (accessToken, refreshToken, profile, cb) {
-        console.log(profile)
-        //Database logic here with callback containing our user object
-      }
-    )
   )
 }
