@@ -1,7 +1,7 @@
 // This file's full path is /public/client.js
 $(document).ready(function () {
   /* Global io */
-  let socket = io.connect('URL')
+  let socket = io()
 
   // Form submittion with new message in field with id 'm'
   $('form').submit(function () {
