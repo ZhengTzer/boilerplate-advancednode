@@ -45,3 +45,7 @@ myDB(async (client) => {
 http.listen(process.env.PORT || 3000, () => {
   console.log('Listening on port ' + process.env.PORT)
 })
+
+io.on('connection', (socket) => {
+  console.log('A user has connected')
+})
