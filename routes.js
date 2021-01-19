@@ -26,6 +26,11 @@ module.exports = function (app, myDataBase) {
       username: req.user.username
     })
   })
+
+app.route('/chat').get(ensureAuthenticated, (req, res) => {
+  res.render('pug/chat', { user: req.user })
+})
+
   app.route('/logout').get((req, res) => {
     req.logout()
     res.redirect('/')

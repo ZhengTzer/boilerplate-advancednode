@@ -9,6 +9,9 @@ const routes = require('./routes')
 const auth = require('./auth.js')
 
 const app = express()
+const http = require('http').createServer(app)
+const io = require('socket.io')(http)
+
 app.set('view engine', 'pug')
 
 fccTesting(app) // For fCC testing purposes
@@ -39,6 +42,6 @@ myDB(async (client) => {
   })
 })
 
-app.listen(process.env.PORT || 3000, () => {
+http.listen(process.env.PORT || 3000, () => {
   console.log('Listening on port ' + process.env.PORT)
 })
